@@ -73,36 +73,3 @@ EXCEPTION WHEN OTHERS THEN
     RAISE NOTICE '================================================';
 END;
 $$;
-
--- ================================================
--- Step: Add Metadata Column to Silver Tables
--- Description: Add and populate `created_date` column 
---              to track when records were inserted 
---              into the Silver layer.
--- Purpose: Helps with auditability and data lineage.
--- ================================================
-
--- Add and populate created_date for silver.crm_cust_info
-ALTER TABLE silver.crm_cust_info ADD COLUMN created_date TIMESTAMP;
-UPDATE silver.crm_cust_info SET created_date = CURRENT_TIMESTAMP WHERE created_date IS NULL;
-
--- Add and populate created_date for silver.crm_prd_info
-ALTER TABLE silver.crm_prd_info ADD COLUMN created_date TIMESTAMP;
-UPDATE silver.crm_prd_info SET created_date = CURRENT_TIMESTAMP WHERE created_date IS NULL;
-
--- Add and populate created_date for silver.crm_sales_details
-ALTER TABLE silver.crm_sales_details ADD COLUMN created_date TIMESTAMP;
-UPDATE silver.crm_sales_details SET created_date = CURRENT_TIMESTAMP WHERE created_date IS NULL;
-
--- Add and populate created_date for silver.erp_loc_a101
-ALTER TABLE silver.erp_loc_a101 ADD COLUMN created_date TIMESTAMP;
-UPDATE silver.erp_loc_a101 SET created_date = CURRENT_TIMESTAMP WHERE created_date IS NULL;
-
--- Add and populate created_date for silver.erp_cust_az12
-ALTER TABLE silver.erp_cust_az12 ADD COLUMN created_date TIMESTAMP;
-UPDATE silver.erp_cust_az12 SET created_date = CURRENT_TIMESTAMP WHERE created_date IS NULL;
-
--- Add and populate created_date for silver.erp_px_cat_g1v2
-ALTER TABLE silver.erp_px_cat_g1v2 ADD COLUMN created_date TIMESTAMP;
-UPDATE silver.erp_px_cat_g1v2 SET created_date = CURRENT_TIMESTAMP WHERE created_date IS NULL;
-
