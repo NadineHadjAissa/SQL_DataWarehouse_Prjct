@@ -91,19 +91,15 @@ WHERE prd_end_dt < prd_start_dt;
 
 -- Check for NULL or empty product names
 SELECT *
-FROM bronze.crm_prd_info
+FROM silver.crm_prd_info
 WHERE prd_nm IS NULL OR TRIM(prd_nm) = '';
 
 -- Check raw prd_line values before transformation
 SELECT DISTINCT prd_line
-FROM bronze.crm_prd_info;
+FROM silver.crm_prd_info;
 
 -- Check for NULL or negative prd_cost
 SELECT *
-FROM bronze.crm_prd_info
+FROM silver.crm_prd_info
 WHERE prd_cost IS NULL OR prd_cost < 0;
 
--- Check for malformed cat_id after transformation
-SELECT DISTINCT cat_id
-FROM silver.crm_prd_info
-WHERE cat_id NOT LIKE 'CAT-%';
