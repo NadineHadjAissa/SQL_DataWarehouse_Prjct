@@ -103,3 +103,74 @@ SELECT *
 FROM silver.crm_prd_info
 WHERE prd_cost IS NULL OR prd_cost < 0;
 
+
+
+-- =====================================================
+-- Load Cleaned Data into silver.crm_sales_detais
+-- =====================================================
+
+
+INSERT INTO silver.crm_sales_details (
+    sls_ord_num, 
+    sls_prd_key, 
+    sls_cust_id, 
+    sls_order_dt, 
+    sls_ship_dt, 
+    sls_due_dt, 
+    sls_sales, 
+    sls_quantity, 
+    sls_price, 
+    created_date,
+	sls_sales_old,
+	sls_price_old
+)
+SELECT 
+    sls_ord_num,
+    sls_prd_key,
+    sls_cust_id,
+
+    CASE 
+        WHEN sls_order_dt = 0 OR LENGTH(sls_order_dt::TEXT) != 8 THEN NULL
+        ELSE TO_DATE(sls_order_dt::TEXT, 'YYYYMMDD')
+    END AS sls_order_dt,
+
+    CASE 
+        WHEN sls_ship_dt = 0 OR LENGTH(sls_ship_dt::TEXT) != 8 THEN NULL
+        ELSE TO_DATE(sls_ship_dt::TEXT, 'YYYYMMDD')
+    END AS sls_ship_dt,
+
+    CASE 
+        WHEN sls_due_dt = 0 OR LENGTH(sls_due_dt::TEXT) != 8 THEN NULL
+        ELSE TO_DATE(sls_due_dt::TEXT, 'YYYYMMDD')
+    END AS sls_due_dt,
+
+    CASE 
+        WHEN sls_sales IS NULL OR sls_sales < 0 OR sls_sales != sls_quantity* ABS(sls_price)
+        THEN sls_price * ABS(sls_quantity)
+        ELSE sls_sales
+    END AS sls_sales,
+
+    sls_quantity,
+
+    CASE 
+        WHEN sls_price IS NULL OR sls_price < 0 
+        THEN sls_sales / NULLIF(sls_quantity, 0)
+        ELSE sls_price
+    END AS sls_price,
+
+    CURRENT_TIMESTAMP AS created_date,
+	sls_sales as sls_sales_old,
+	sls_price as sls_price_old
+
+FROM bronze.crm_sales_details;
+
+-- =====================================================
+-- Quality Checks: crm_sales_details
+-- =====================================================
+SELECT 
+  COUNT(*) FILTER (WHERE sls_sales IS NULL OR sls_quantity IS NULL OR sls_price IS NULL) AS null_values,
+  COUNT(*) FILTER (WHERE sls_sales < 0 OR sls_quantity < 0 OR sls_price < 0) AS negative_values,
+  COUNT(*) FILTER (WHERE sls_quantity = 0 OR sls_price = 0) AS zero_values
+FROM silver.crm_sales_details;
+
+
