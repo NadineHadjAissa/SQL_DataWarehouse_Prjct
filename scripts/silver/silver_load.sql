@@ -1,7 +1,7 @@
 -- =====================================================
 -- Load Cleaned Data into silver.crm_cust_info
 -- =====================================================
-
+TRUNCATE TABLE silver.crm_cust_info;
 INSERT INTO silver.crm_cust_info (
   cst_id,
   cst_firstname,
@@ -22,35 +22,11 @@ SELECT
   CAST(cst_birth_dt AS DATE),
   CAST(cst_create_date AS DATE)
 FROM bronze.crm_cust_info;
--- =====================================================
--- Quality Checks: crm_cust_info
--- =====================================================
 
--- Check for untrimmed names
-SELECT *
-FROM bronze.crm_cust_info
-WHERE cst_firstname != TRIM(cst_firstname)
-   OR cst_lastname  != TRIM(cst_lastname);
-
--- Check for invalid gender values
-SELECT DISTINCT cst_gender
-FROM bronze.crm_cust_info;
-
--- Check for NULL or empty birth or create dates
-SELECT *
-FROM bronze.crm_cust_info
-WHERE cst_birth_dt IS NULL OR cst_create_date IS NULL
-   OR cst_birth_dt = '' OR cst_create_date = '';
-
--- Check for duplicate customer IDs
-SELECT cst_id, COUNT(*)
-FROM silver.crm_cust_info
-GROUP BY cst_id
-HAVING COUNT(*) > 1;
 -- =====================================================
 -- Load Cleaned Data into silver.crm_prd_info
 -- =====================================================
-
+TRUNCATE TABLE silver.crm_prd_info;
 INSERT INTO silver.crm_prd_info (
   prd_id,
   prd_key,
@@ -79,37 +55,11 @@ SELECT
 FROM bronze.crm_prd_info;
 
 
-
 -- =====================================================
--- Quality Checks: crm_prd_info
--- =====================================================
-
--- Check if any prd_end_dt < prd_start_dt
-SELECT *
-FROM silver.crm_prd_info
-WHERE prd_end_dt < prd_start_dt;
-
--- Check for NULL or empty product names
-SELECT *
-FROM silver.crm_prd_info
-WHERE prd_nm IS NULL OR TRIM(prd_nm) = '';
-
--- Check raw prd_line values before transformation
-SELECT DISTINCT prd_line
-FROM silver.crm_prd_info;
-
--- Check for NULL or negative prd_cost
-SELECT *
-FROM silver.crm_prd_info
-WHERE prd_cost IS NULL OR prd_cost < 0;
-
-
-
--- =====================================================
--- Load Cleaned Data into silver.crm_sales_detais
+-- Load Cleaned Data into silver.crm_sales_details
 -- =====================================================
 
-
+TRUNCATE TABLE silver.crm_sales_details;
 INSERT INTO silver.crm_sales_details (
     sls_ord_num, 
     sls_prd_key, 
@@ -164,13 +114,56 @@ SELECT
 
 FROM bronze.crm_sales_details;
 
+
 -- =====================================================
--- Quality Checks: crm_sales_details
+-- Load Cleaned Data into silver.erp_cust_az12
 -- =====================================================
+insert into silver.erp_cust_az12(cid, bdate, gen, created_date)
+select 
+case when cid like 'NAS%'then substring(cid,4,length(cid))
+else cid
+end cid ,
+
+ CASE WHEN bdate > current_date then NULL
+ else bdate
+ end as bdate,
+
+ case when(upper(trim(gen)))='M' then 'Male'
+      when (upper(trim(gen)))='F' then 'Female'
+	  else 'n/a'
+	  end as gen ,
+	  current_timestamp as created_date
+from bronze.erp_cust_az12 ; done it wokrs
+
+
+-- =====================================================
+-- Load Cleaned Data into silver.erp_loc_a101
+-- =====================================================
+TRUNCATE TABLE silver.erp_loc_a101;
+INSERT INTO silver.erp_loc_a101(cid, cntry, created_date)
 SELECT 
-  COUNT(*) FILTER (WHERE sls_sales IS NULL OR sls_quantity IS NULL OR sls_price IS NULL) AS null_values,
-  COUNT(*) FILTER (WHERE sls_sales < 0 OR sls_quantity < 0 OR sls_price < 0) AS negative_values,
-  COUNT(*) FILTER (WHERE sls_quantity = 0 OR sls_price = 0) AS zero_values
-FROM silver.crm_sales_details;
+    REPLACE(cid, '-', '') AS cid,
+    CASE 
+        WHEN TRIM(cntry) = 'USA' OR TRIM(cntry) = 'US' THEN 'United States' 
+        WHEN TRIM(cntry) = 'DE' THEN 'Germany'
+        WHEN TRIM(cntry) = '' OR cntry IS NULL THEN 'n/a'
+        ELSE TRIM(cntry) 
+    END AS cntry,
+    CURRENT_TIMESTAMP AS created_date
+FROM bronze.erp_loc_a101;
 
 
+
+-- =====================================================
+-- Load Cleaned Data into silver.erp_px_cat_g1v2
+-- =====================================================
+--data is already cleaned --
+TRUNCATE TABLE silver.erp_px_cat_g1v2;
+INSERT INTO silver.erp_px_cat_g1v2(id, cat, subcat, maintenance, created_date) 
+SELECT 
+id ,
+cat,
+subcat,
+maintenance,
+current_timestamp as created_date
+FROM bronze.erp_px_cat_g1v2;
