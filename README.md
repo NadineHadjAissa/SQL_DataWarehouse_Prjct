@@ -44,12 +44,12 @@ The goal is to design and implement a **modern Data Warehouse** using SQL and be
 - Dimensions vs Facts
 - Data Modeling & Documentation
 
-## 🚀 Status
-
-✅ In Progress (based on tutorial timeline)  
-📅 Last Update: July 2025
 
 ## 📄 License
-
 This project is for educational and portfolio purposes.
+
+
+👩‍💻 About Me
+I'm a third-year Computer Science student at ESTIN Béjaïa, passionate about Data Science, AI, and building real-world data pipelines.
+Connect with me on LinkedIn.
 
