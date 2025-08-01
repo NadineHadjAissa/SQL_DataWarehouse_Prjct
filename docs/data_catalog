@@ -1,0 +1,55 @@
+
+
+### 📘 Data Catalog — `gold` Schema
+
+
+
+#### 🔶 `gold.dim_products`
+
+| Column Name     | Data Type   | Description                            |
+| --------------- | ----------- | -------------------------------------- |
+| product\_key    | VARCHAR(50) | Surrogate key for product              |
+| product\_id     | VARCHAR(50) | Original product ID                    |
+| product\_number | VARCHAR(50) | Business key from CRM                  |
+| product\_name   | VARCHAR(50) | Name of the product                    |
+| category\_id    | VARCHAR(50) | Foreign key to category table          |
+| category        | VARCHAR(50) | Product category                       |
+| subcategory     | VARCHAR(50) | Product subcategory                    |
+| maintenance     | VARCHAR(50) | Indicates if product needs maintenance |
+| cost            | VARCHAR(50) | Product cost                           |
+| product\_line   | VARCHAR(50) | Grouping label for product line        |
+| start\_date     | VARCHAR(50) | Date when product was introduced       |
+
+---
+
+#### 🔷 `gold.dim_customers`
+
+| Column Name      | Data Type   | Description                       |
+| ---------------- | ----------- | --------------------------------- |
+| customer\_key    | VARCHAR(50) | Surrogate key for customer        |
+| customer\_id     | VARCHAR(50) | Original customer ID              |
+| customer\_number | VARCHAR(50) | Business key from CRM             |
+| first\_name      | VARCHAR(50) | Customer's first name             |
+| last\_name       | VARCHAR(50) | Customer's last name              |
+| country          | VARCHAR(50) | Customer's country                |
+| marital\_status  | VARCHAR(50) | Marital status from CRM           |
+| gender           | VARCHAR(50) | Gender from CRM or ERP (fallback) |
+| birthdate        | VARCHAR(50) | Date of birth from ERP            |
+| create\_date     | VARCHAR(50) | CRM record creation date          |
+
+---
+
+#### 📦 `gold.fact_sales`
+
+| Column Name    | Data Type   | Description                    |
+| -------------- | ----------- | ------------------------------ |
+| order\_number  | VARCHAR(50) | Sales order number             |
+| product\_key   | VARCHAR(50) | Foreign key to `dim_products`  |
+| customer\_key  | VARCHAR(50) | Foreign key to `dim_customers` |
+| order\_date    | VARCHAR(50) | Date of the order              |
+| shipping\_date | VARCHAR(50) | Date when order was shipped    |
+| due\_date      | VARCHAR(50) | Expected delivery date         |
+| sales\_amount  | VARCHAR(50) | Total amount of the sale       |
+| quantity       | VARCHAR(50) | Quantity of items sold         |
+| price          | VARCHAR(50) | Unit price of the product      |
+
