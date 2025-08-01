@@ -49,7 +49,7 @@ The goal is to design and implement a **modern Data Warehouse** using SQL and be
 This project is for educational and portfolio purposes.
 
 
-👩‍💻 About Me
+## 👩‍💻 About Me
 I'm a third-year Computer Science student at ESTIN Béjaïa, passionate about Data Science, AI, and building real-world data pipelines.
 Connect with me on LinkedIn.
 
