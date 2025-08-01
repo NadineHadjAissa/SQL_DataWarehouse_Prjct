@@ -52,4 +52,6 @@ This project is for educational and portfolio purposes.
 ## 👩‍💻 About Me
 I'm a third-year Computer Science student at ESTIN Béjaïa, passionate about Data Science, AI, and building real-world data pipelines.
 Connect with me on LinkedIn.
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-nadine--hadj--aissa-blue?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/nadine-hadj-aissa-2b9067316/)
+
 
