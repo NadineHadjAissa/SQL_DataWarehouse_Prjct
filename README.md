@@ -11,7 +11,6 @@ The goal is to design and implement a **modern Data Warehouse** using SQL and be
 - SQL (DDL, DML, Stored Procedures)
 - Git & GitHub
 - Draw.io (for architecture design)
-- Notion (for planning)
 - ETL scripting
 - Data Modeling (Star Schema)
 
